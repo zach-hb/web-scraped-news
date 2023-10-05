@@ -1,1 +1,4 @@
 # web-scraped-news
+
+Aiming to visualize sentiment/topics of the day on front page of news websites starting with Associated Press.
+Searching for a way to deploy the finished product online...
