@@ -1,0 +1,25 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AP News Visualization</title>
+    <script>
+        // JavaScript function to display the current date
+        function displayCurrentDate() {
+            const currentDate = new Date();
+            const month = currentDate.getMonth() + 1;
+            const day = currentDate.getDate();
+            const formattedDate = month + '/' + day;
+            const h1Element = document.querySelector('h1');
+            h1Element.textContent = `Most Frequent Words on Front Page of AP News Website ${formattedDate}`;
+        }
+
+        // Call the function when the page loads
+        window.onload = displayCurrentDate;
+    </script>
+</head>
+<body>
+    <h1></h1>
+    <img src="ap_plot.png" alt="AP News Words Visualization">
+</body>
+</html>
