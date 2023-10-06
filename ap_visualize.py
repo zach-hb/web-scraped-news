@@ -53,6 +53,7 @@ def ap_scrape_clean_viz():
                 link_text.append(text)
         except:
             pass
+            
     browser.quit()
     # separate and clean text
     words_list = []
