@@ -20,41 +20,62 @@ def remove_stopwords(list):
 
 
 def ap_scrape_clean_viz():
-    '''Retrieves text from Associated Press webpage,
+    '''Retrieves text from Associated Press webpages,
       cleans it using remove_stopwords function, and
       creates a visualization using the text.'''
 
 
     browser = Browser('chrome')
-    url = 'https://apnews.com/'
-    browser.visit(url)
+    # starts in list so we can add other links to it later, then extract data for all pages in one step
+    urls = ['https://apnews.com/']
+    browser.visit(urls[0])
 
     html = browser.html
     ap_soup = soup(html, 'html.parser')
-    # article links text contain header of news article, sometimes image header
-    ap_article_links = ap_soup.find_all(class_ = 'Link')
-    # text for the breaking news bar underneath website nav
-    promo_text = ap_soup.findAll(class_ = ' PagePromoContentIcons-text')
+
+    # initialize list for later
     link_text = []
 
-    # take text from articles
-    for link in ap_article_links:
-        try:
-            text = link.text.strip()
-            if text:
-                link_text.append(text)
-        except:
+    # extract each topic
+    topics_links = ap_soup.find_all(class_ = 'AnClick-MainNav')
+
+    # grab link for each topic
+    for topic in topics_links:
+        if topic['href'] in urls:
             pass
-    # take text from breaking news
-    for link in promo_text:
-        try:
-            text = link.text.strip()
-            if text:
-                link_text.append(text)
-        except:
-            pass
-            
+        else:
+            urls.append(topic['href'])
+
+    # visit each topic page, parse for article, image, and promo text, then adds all text to list for later
+    for url in urls:
+        browser.visit(url)
+        html = browser.html
+        ap_soup = soup(html, 'html.parser')
+
+        # article links text contain header of news article, sometimes image header
+        ap_article_links = ap_soup.find_all(class_ = 'Link')
+        # text for the breaking news bar underneath website nav
+        promo_text = ap_soup.findAll(class_ = ' PagePromoContentIcons-text')
+        
+        # take text from articles
+        for link in ap_article_links:
+            try:
+                text = link.text.strip()
+                if text:
+                    link_text.append(text)
+            except:
+                pass
+        # take text from breaking news
+        for link in promo_text:
+            try:
+                text = link.text.strip()
+                if text:
+                    link_text.append(text)
+            except:
+                pass
+
     browser.quit()
+
     # separate and clean text
     words_list = []
     for item in link_text:
@@ -81,7 +102,7 @@ def ap_scrape_clean_viz():
     plt.barh(clean_top_words, clean_top_counts)
     plt.xlabel('Words')
     plt.ylabel('Count')
-    plt.title('Most Used Words on Front Page of AP Website')
+    plt.title('Most Used Words on Main Pages of AP Website')
 
     plt.savefig('ap_plot.png', format='png', bbox_inches='tight')
 
